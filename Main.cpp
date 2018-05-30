@@ -4,10 +4,9 @@
 using namespace cosc326;
 
 int main() {
-    Integer i("5");
+    Integer i("-5");
     Integer j("7");
     Integer r;
     r = i + j;
-    std::cout << r.getValue();
-
+    std::cout << (i != j) << '\n';
 }

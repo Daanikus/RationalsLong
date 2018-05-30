@@ -19,10 +19,11 @@ namespace cosc326 {
 
 		~Integer();
 
-                const bool getSign() const;
+                bool getSign() const;
                 void setSign(bool sign);
-                const unsigned long long getValue() const;
+                unsigned long long getValue() const;
                 void setValue(const unsigned long long);
+                std::string getIntegerAsString() const;
 
 		Integer& operator=(const Integer& i);  // j = i;
 

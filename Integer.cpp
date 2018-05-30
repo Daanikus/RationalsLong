@@ -14,13 +14,14 @@ namespace cosc326 {
     }
 
     Integer::Integer(const std::string& s) {
+        std::string scopy = s;
         if (s[0] == '-') {
-            this->is_positive_ = false;;
-            s.substr(1, s.length());
+            this->is_positive_ = false;
+            scopy = s.substr(1, s.length());
         } else {
-            this->is_positive_ = true;;
+            this->is_positive_ = true;
         }
-	this->value_ = atoll(s.c_str());
+	this->value_ = atoll(scopy.c_str());
     }
 
 
@@ -29,12 +30,15 @@ namespace cosc326 {
     }
 
     Integer& Integer::operator=(const Integer& i) {
-        
+        this->value_ = i.getValue();
         return *this;
     }
 
     Integer Integer::operator-() const {
-        return Integer(*this);
+        Integer result(*this);
+        result.is_positive_ = !this->is_positive_;
+        result.value_ = this->value_;
+        return result;
     }
 
     Integer Integer::operator+() const {
@@ -42,58 +46,85 @@ namespace cosc326 {
     }
 
     Integer& Integer::operator+=(const Integer& i) {
+        this->value_ = this->value_ + i.getValue();
         return *this;
     }
 
     Integer& Integer::operator-=(const Integer& i) {
+        this->value_ = this->value_ - i.getValue();
         return *this;
     }
 
     Integer& Integer::operator*=(const Integer& i) {
+        this->value_ = this->value_ * i.getValue();
         return *this;
     }
 
     Integer& Integer::operator/=(const Integer& i) {
+        this->value_ = this->value_ / i.getValue();
         return *this;
     }
 
     Integer& Integer::operator%=(const Integer& i) {
+        this->value_ = this->value_ % i.getValue();
         return *this;
     }
 
     Integer operator+(const Integer& lhs, const Integer& rhs) {
-        Integer result;
-        result = lhs + rhs;
+        bool addsign = false;
+        if (lhs.getSign() != rhs.getSign()) addsign = true;
+        unsigned long long r = lhs.getValue() + rhs.getValue();
+        Integer result(std::to_string(r));
+        result.setSign(addsign);
         return result;
     }
 
     Integer operator-(const Integer& lhs, const Integer& rhs) {
-        return lhs - rhs;
+        bool addsign = false;
+        if (lhs.getSign() != rhs.getSign()) addsign = true;
+        unsigned long long r = lhs.getValue() - rhs.getValue();
+        Integer result(std::to_string(r));
+        result.setSign(addsign);
+        return result;
     }
 
     Integer operator*(const Integer& lhs, const Integer& rhs) {
         bool addsign = false;
         if (lhs.getSign() != rhs.getSign()) addsign = true;
-        Integer result;
-        result = lhs * rhs;
+        unsigned long long r = lhs.getValue() * rhs.getValue();
+        Integer result(std::to_string(r));
         result.setSign(addsign);
         return result;
     }
 
     Integer operator/(const Integer& lhs, const Integer& rhs) {
-        return lhs / rhs;
+        bool addsign = false;
+        if (lhs.getSign() != rhs.getSign()) addsign = true;
+        unsigned long long r = lhs.getValue() / rhs.getValue();
+        Integer result(std::to_string(r));
+        result.setSign(addsign);
+        return result;
     }
 
     Integer operator%(const Integer& lhs, const Integer& rhs) {
-        return lhs % rhs;
+        bool addsign = false;
+        if (lhs.getSign() != rhs.getSign()) addsign = true;
+        unsigned long long r = lhs.getValue() % rhs.getValue();
+        Integer result(std::to_string(r));
+        result.setSign(addsign);
+        return result;
     }
 
 
     std::ostream& operator<<(std::ostream& os, const Integer& i) {
+        unsigned long long r = i.getValue() * 2;
+        os << r
         return os;
     }
 
     std::istream& operator>>(std::istream& is, Integer& i) {
+        unsigned long long r = i.getValue() / 2;
+        is << r;
         return is;
     }
 
@@ -102,26 +133,46 @@ namespace cosc326 {
             if (lhs.getSign() == false) return true;
             return false;
         }
-        return lhs < rhs;
+        return lhs.getValue() < rhs.getValue();
     }
 
-    bool operator> (const Integer& lhs, const Integer& rhs) {
-        return true;
+    bool operator>(const Integer& lhs, const Integer& rhs) {
+        if (lhs.getSign() != rhs.getSign()) {
+            if (lhs.getSign() == false) return false;
+            return true;
+        }
+        return lhs.getValue() > rhs.getValue();
     }
 
     bool operator<=(const Integer& lhs, const Integer& rhs) {
-        return true;
+        if (lhs.getValue() == rhs.getValue()
+            && lhs.getSign() == rhs.getSign()) {
+            return true;
+        }
+        return lhs < rhs;
     }
 
     bool operator>=(const Integer& lhs, const Integer& rhs) {
-        return true;
+        if (lhs.getValue() == rhs.getValue()
+            && lhs.getSign() == rhs.getSign()) {
+            return true;
+        }
+        return lhs > rhs;
     }
 
     bool operator==(const Integer& lhs, const Integer& rhs) {
-        return true;
+        if (lhs.getValue() == rhs.getValue()
+            && lhs.getSign() == rhs.getSign()) {
+            return true;
+        }
+        return false;
     }
 
     bool operator!=(const Integer& lhs, const Integer& rhs) {
+        if (lhs.getValue() == rhs.getValue()
+            && lhs.getSign() == rhs.getSign()) {
+            return false;
+        }
         return true;
     }
 
@@ -130,7 +181,7 @@ namespace cosc326 {
         return a;
     }
 
-    const bool Integer::getSign() const {
+    bool Integer::getSign() const {
         return this->is_positive_;
     }
 
@@ -138,12 +189,20 @@ namespace cosc326 {
         this->is_positive_ = sign;
     }
 
-    const unsigned long long Integer::getValue() const {
+    unsigned long long Integer::getValue() const {
         return this->value_;
     }
 
     void Integer::setValue(unsigned long long val) {
         this->value_ = val;
+    }
+
+    std::string Integer::getIntegerAsString() const {
+        std::string s = std::to_string(this->value_);
+        if (this->is_positive_ == false) {
+            s = '-' + s;
+        }
+        return s;
     }
 
     
