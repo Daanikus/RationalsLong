@@ -117,14 +117,14 @@ namespace cosc326 {
 
 
     std::ostream& operator<<(std::ostream& os, const Integer& i) {
-        unsigned long long r = i.getValue() * 2;
-        os << r
+       
+        os << i.getIntegerAsString();
         return os;
     }
 
     std::istream& operator>>(std::istream& is, Integer& i) {
-        unsigned long long r = i.getValue() / 2;
-        is << r;
+        
+       
         return is;
     }
 
