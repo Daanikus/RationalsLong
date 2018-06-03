@@ -78,16 +78,16 @@ namespace cosc326 {
         if (!lhsc.getSign() && rhsc.getSign()) {
             std::cout << "lhs" << rhs.getValue() << rhs.getSign() << "\n";
             lhsc.setSign(true);
-            Integer r = lhsc - rhsc;
+            Integer r(std::to_string(lhsc.getValue() - rhsc.getValue()));
             r.setSign(false);
             result = r;
         } else if (lhsc.getSign() && !rhsc.getSign()) {
             std::cout << "here2\n";
-            lhsc.setSign(true);
+            rhsc.setSign(true);
             Integer rh(std::to_string(rhsc.getValue()));
             rh.setSign(true);
             
-            result = lhs - rhs;
+            result = lhsc - rhsc;
         } else if ((lhsc.getSign() && rhsc.getSign())
                    || (!lhsc.getSign() && !rhsc.getSign())) {
             std::cout << "here3\n";
@@ -118,11 +118,11 @@ namespace cosc326 {
             res.setSign(false);
             result = res;    
         } else if (big.getSign() && !small.getSign()) {
-            /*unsigned long long r = big.getValue() + small.getValue();
+            unsigned long long r = big.getValue() + small.getValue();
             Integer res(std::to_string(r));
-            res.setSign(false);
-            result = res;*/
-            result = big + small;
+            res.setSign(true);
+            result = res;
+            
         } else if(!big.getSign() && !small.getSign()) {
             unsigned long long res = big.getValue() - small.getValue();
             Integer r(std::to_string(res));
