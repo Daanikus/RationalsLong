@@ -47,35 +47,36 @@ namespace cosc326 {
     }
 
     Integer& Integer::operator+=(const Integer& i) {
-        this->value_ = this->value_ + i.getValue();
+        *this = *this + i;
         return *this;
     }
 
     Integer& Integer::operator-=(const Integer& i) {
-        this->value_ = this->value_ - i.getValue();
+        *this = *this - i;
         return *this;
     }
 
     Integer& Integer::operator*=(const Integer& i) {
-        this->value_ = this->value_ * i.getValue();
+        *this = *this * i;
         return *this;
     }
 
     Integer& Integer::operator/=(const Integer& i) {
-        this->value_ = this->value_ / i.getValue();
+        *this = *this / i;
         return *this;
     }
 
     Integer& Integer::operator%=(const Integer& i) {
-        this->value_ = this->value_ % i.getValue();
+        *this = *this % i;
         return *this;
     }
 
     Integer operator+(const Integer& lhs, const Integer& rhs) {
-        Integer result;
-        Integer lhsc = lhs;
-        Integer rhsc = rhs;
-        if (!lhsc.getSign() && rhsc.getSign()) {
+        Integer finalres;
+        Integer big = lhs.getValue() > rhs.getValue() ? lhs : rhs;
+        Integer small = lhs.getValue() <= rhs.getValue() ? lhs : rhs;
+        std::cout << "big sign " << big.getSign() << " small sign " << small.getSign() << "\n";
+        /*if (!lhsc.getSign() && rhsc.getSign()) {
             std::cout << "lhs" << rhs.getValue() << rhs.getSign() << "\n";
             lhsc.setSign(true);
             Integer r(std::to_string(lhsc.getValue() - rhsc.getValue()));
@@ -96,14 +97,30 @@ namespace cosc326 {
             Integer res(std::to_string(r));
             res.setSign(rhsc.getSign());
             result = res;
+            }*/
+        
+        // Both the same
+        if (big.getSign() == small.getSign()) {
+            std::cout << "Signes the same in add\n";
+            unsigned long long r = big.getValue() + small.getValue();
+            Integer result(std::to_string(r));
+            result.setSign(big.getSign());
+            finalres = result;
+        } else {
+            
+            unsigned long long r = big.getValue() - small.getValue();
+            Integer result(std::to_string(r));
+            result.setSign(big.getSign());
+            finalres = result;
         }
-        return result;
+        return finalres;
     }
 
     Integer operator-(const Integer& lhs, const Integer& rhs) {
-        Integer result;
-        Integer big, small;
-        bool switched = false;
+        Integer finalres;
+        Integer big = lhs.getValue() > rhs.getValue() ? lhs : rhs;
+        Integer small = lhs.getValue() <= rhs.getValue() ? lhs : rhs;
+        /*bool switched = false;
         if (lhs.getValue() > rhs.getValue()) {
             big = lhs;
             small = rhs;
@@ -135,9 +152,23 @@ namespace cosc326 {
                 r.setSign(false);
             }
             result = r;
+            }*/
+        if (big.getSign() == small.getSign()) {
+            std::cout << "signs the same in subtraction\n";
+            unsigned long long r = big.getValue() - small.getValue();
+            std::cout << "Unsigned result is " << r << '\n';
+            Integer result(std::to_string(r));
+            if (big == lhs) result.setSign(big.getSign());
+            else result.setSign(!big.getSign());
+            finalres = result;
+        } else {
+            unsigned long long r = big.getValue() + small.getValue();
+            Integer result(std::to_string(r));
+            result.setSign(!rhs.getSign());
+            finalres = result;
         }
         
-        return result;
+        return finalres;
     }
 
     Integer operator*(const Integer& lhs, const Integer& rhs) {
@@ -176,7 +207,7 @@ namespace cosc326 {
 
     std::istream& operator>>(std::istream& is, Integer& i) {
         
-       
+        r.getIntegerAsString() >> is;
         return is;
     }
 
@@ -251,12 +282,10 @@ namespace cosc326 {
 
     std::string Integer::getIntegerAsString() const {
         std::string s = std::to_string(this->value_);
-        if (this->is_positive_ == false) {
+        if (this->is_positive_ == false && this->value_ != 0) {
             s = '-' + s;
         }
         return s;
     }
-
-    
 
 }
