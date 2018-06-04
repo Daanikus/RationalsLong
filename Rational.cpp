@@ -85,26 +85,34 @@ namespace cosc326 {
     }
     
     Rational operator+(const Rational& lhs, const Rational& rhs) {
-        return lhs;
+        Rational result;
+        result.setNum(lhs.getNum() + rhs.getNum());
+        result.setDenom(lhs.getDenom() + rhs.getDenom());
+        if (!lhs.getSign() || !rhs.getSign()) result.setSign(false);
+        return result;
     }
     
     Rational operator-(const Rational& lhs, const Rational& rhs) {
+        Rational result;
+        result.setNum(lhs.getNum() - rhs.getNum());
+        result.setDenom(lhs.getDenom() - rhs.getDenom());
+        if (!lhs.getSign() || !rhs.getSign()) result.setSign(false);
         return lhs;
     }
     
     Rational operator*(const Rational& lhs, const Rational& rhs) {
-        Ratinal result;
-        result.num_ = lhs.getNum() * rhs.getNum();
-        result.denom_ = lhs.getDenom() * rhs.getDenom();
-        if (lhs.getSign() != rhs.getSign) result.is_positive_ = false;
+        Rational result;
+        result.setNum(lhs.getNum() * rhs.getNum());
+        result.setDenom(lhs.getDenom() * rhs.getDenom());
+        if (lhs.getSign() != rhs.getSign()) result.setSign(false);
         return lhs;
     }
     
     Rational operator/(const Rational& lhs, const Rational& rhs) {
-        Ratinal result;
-        result.num_ = lhs.getNum() / rhs.getNum();
-        result.denom_ = lhs.getDenom() / rhs.getDenom();
-        if (lhs.getSign() != rhs.getSign) result.is_positive_ = false;
+        Rational result;
+        result.setNum(lhs.getNum() / rhs.getNum());
+        result.setDenom(lhs.getDenom() / rhs.getDenom());
+        if (lhs.getSign() != rhs.getSign()) result.setSign(false);
         return lhs;
     }
     
