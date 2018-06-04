@@ -18,12 +18,14 @@ namespace cosc326 {
         this->num_ = a;
         this->denom_ = Integer("1");
         this->is_positive_ = a.getSign();
+        this->reduce();
     }
 
     Rational::Rational(const Integer& a, const Integer& b) {
         this->num_ = a;
         this->denom_ = b;
         this->is_positive_ = a.getSign();
+        this->reduce();
 
     }
 
@@ -32,6 +34,7 @@ namespace cosc326 {
         this->num_ = r;
         this->denom_ = c;
         this->is_positive_ = r.getSign();
+        this->reduce();
     }
 
     Rational::~Rational() {
@@ -39,6 +42,7 @@ namespace cosc326 {
     }
 
     Rational& Rational::operator=(const Rational& r) {
+        reduce();
         this->num_ = r.getNum();
         this->denom_ = r.getDenom();
         this->is_positive_ = r.getSign();
@@ -58,6 +62,7 @@ namespace cosc326 {
     }
     
     Rational& Rational::operator+=(const Rational& r) {
+        this->reduce();
         this->num_ += r.getNum();
         this->denom_ += r.getDenom();
         return *this;
@@ -65,10 +70,12 @@ namespace cosc326 {
     
     
     Rational& Rational::operator-=(const Rational& r) {
+        this->reduce();
         return *this;
     }
     
     Rational& Rational::operator*=(const Rational& r) {
+        this->reduce();
         this->num_ = this->num_ * r.getNum();
         this->denom_ = this->denom_ * r.getNum();
         if (this->is_positive_ != r.getSign()) this->is_positive_ = false;
@@ -77,6 +84,7 @@ namespace cosc326 {
     }
     
     Rational& Rational::operator/=(const Rational& r) {
+        this->reduce();
         this->num_ = this->num_ / r.getNum();
         this->denom_ = this->denom_ / r.getNum();
         if (this->is_positive_ != r.getSign()) this->is_positive_ = false;
@@ -165,6 +173,7 @@ namespace cosc326 {
 
     void Rational::setDenom(Integer a) {
         this->denom_ = a;
+        this->reduce();
     }
 
     Integer Rational::getNum() const {
@@ -173,7 +182,9 @@ namespace cosc326 {
 
     void Rational::setNum(Integer a) {
         this->num_ = a;
+        this->reduce();
     }
+            
     std::string Rational::getRationalAsString() const {
         std::string s;
         Integer whole = this->num_ / this->denom_;
@@ -191,6 +202,14 @@ namespace cosc326 {
         }
         if (!whole.getSign()) s.insert(0, "-");
         return s;
+    }
+
+    void Rational::reduce() {
+        Integer divisor = gcd(this->num_, this->denom_);
+        std::cout << this->num_ << " " << this->denom_ << '\n';
+        this->num_ = this->num_ / divisor;
+        this->denom_ = this->denom_ / divisor;
+        std::cout << this->num_ << " " << this->denom_ << '\n';
     }
 }
     

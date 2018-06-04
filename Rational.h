@@ -29,6 +29,7 @@ namespace cosc326 {
         void setDenom(Integer a);
         Integer getNum() const;
         void setNum(Integer a);
+        void reduce();
         std::string getRationalAsString() const;
 
         Rational& operator=( const Rational& r); // q = r;
