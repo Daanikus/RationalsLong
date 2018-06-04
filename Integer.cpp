@@ -1,4 +1,4 @@
-#include "Integer.h"
+ #include "Integer.h"
 #include <string>
 
 namespace cosc326 {
@@ -79,29 +79,6 @@ namespace cosc326 {
         Integer finalres;
         Integer big = lhs.getValue() > rhs.getValue() ? lhs : rhs;
         Integer small = lhs.getValue() <= rhs.getValue() ? lhs : rhs;
-        // std::cout << "big sign " << big.getSign() << " small sign " << small.getSign() << "\n";
-        /*if (!lhsc.getSign() && rhsc.getSign()) {
-          std::cout << "lhs" << rhs.getValue() << rhs.getSign() << "\n";
-          lhsc.setSign(true);
-          Integer r(std::to_string(lhsc.getValue() - rhsc.getValue()));
-          r.setSign(false);
-          result = r;
-          } else if (lhsc.getSign() && !rhsc.getSign()) {
-          std::cout << "here2\n";
-          rhsc.setSign(true);
-          Integer rh(std::to_string(rhsc.getValue()));
-          rh.setSign(true);
-
-          result = lhsc - rhsc;
-          } else if ((lhsc.getSign() && rhsc.getSign())
-          || (!lhsc.getSign() && !rhsc.getSign())) {
-          std::cout << "here3\n";
-          unsigned long long r;
-          r = lhsc.getValue() + rhsc.getValue();
-          Integer res(std::to_string(r));
-          res.setSign(rhsc.getSign());
-          result = res;
-          }*/
 
         // Both the same
         if (big.getSign() == small.getSign()) {
@@ -124,39 +101,6 @@ namespace cosc326 {
         Integer finalres;
         Integer big = lhs.getValue() > rhs.getValue() ? lhs : rhs;
         Integer small = lhs.getValue() <= rhs.getValue() ? lhs : rhs;
-        /*bool switched = false;
-          if (lhs.getValue() > rhs.getValue()) {
-          big = lhs;
-          small = rhs;
-          } else {
-          switched = true;
-          big = rhs;
-          small = lhs;
-          }
-          if (!big.getSign() && small.getSign()) {
-          unsigned long long r = big.getValue() + small.getValue();
-          Integer res(std::to_string(r));
-          res.setSign(false);
-          result = res;    
-          } else if (big.getSign() && !small.getSign()) {
-          unsigned long long r = big.getValue() + small.getValue();
-          Integer res(std::to_string(r));
-          res.setSign(true);
-          result = res;
-
-          } else if(!big.getSign() && !small.getSign()) {
-          unsigned long long res = big.getValue() - small.getValue();
-          Integer r(std::to_string(res));
-          r.setSign(false);
-          result = r;
-          } else {
-          unsigned long long res = big.getValue() - small.getValue();
-          Integer r(std::to_string(res));
-          if (switched) {
-          r.setSign(false);
-          }
-          result = r;
-          }*/
         if (big.getSign() == small.getSign()) {
             //       std::cout << "signs the same in subtraction\n";
             unsigned long long r = big.getValue() - small.getValue();
@@ -261,7 +205,15 @@ namespace cosc326 {
 
 
     Integer gcd(const Integer& a, const Integer& b) {
-        return a;
+        unsigned long long v = a.getValue();
+        unsigned long long u = b.getValue();
+        while ( v != 0) {
+            unsigned long long r = u % v;
+            u = v;
+            v = r;
+        }
+        Integer result(std::to_string(u));
+        return result;
     }
 
     bool Integer::getSign() const {

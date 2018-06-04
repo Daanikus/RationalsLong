@@ -21,7 +21,15 @@ namespace cosc326 {
         Rational(const Integer& a, const Integer& b); // a/b
         Rational(const Integer& a, const Integer& b, const Integer& c); // a + b/c
         
-		~Rational();
+        ~Rational();
+
+        bool getSign() const;
+        void setSign(bool sign);
+        Integer getDenom() const;
+        void setDenom(Integer a);
+        Integer getNum() const;
+        void setNum(Integer a);
+        std::string getRationalAsString() const;
 
         Rational& operator=( const Rational& r); // q = r;
         
@@ -41,6 +49,9 @@ namespace cosc326 {
 
 	private:
 		// Can add internal storage or methods here
+                Integer denom_;
+                Integer num_;
+                bool is_positive_;
 	};
 
 	// Binary operators
