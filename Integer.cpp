@@ -4,12 +4,12 @@
 namespace cosc326 {
 
     Integer::Integer() {
-	value_ = 0L;
+        value_ = 0L;
         this->is_positive_ = true;
     }
 
     Integer::Integer(const Integer& i) {
-	this->value_ = i.getValue();
+        this->value_ = i.getValue();
         this->is_positive_ = i.getSign();
     }
 
@@ -21,12 +21,12 @@ namespace cosc326 {
         } else {
             this->is_positive_ = true;
         }
-	this->value_ = atoll(scopy.c_str());
+        this->value_ = atoll(scopy.c_str());
     }
 
 
     Integer::~Integer() {
-	
+
     }
 
     Integer& Integer::operator=(const Integer& i) {
@@ -43,7 +43,9 @@ namespace cosc326 {
     }
 
     Integer Integer::operator+() const {
-        return Integer(*this);
+        Integer result(*this);
+        if (!result.is_positive_) result.is_positive_ = true;
+        return result;
     }
 
     Integer& Integer::operator+=(const Integer& i) {
@@ -57,6 +59,7 @@ namespace cosc326 {
     }
 
     Integer& Integer::operator*=(const Integer& i) {
+
         *this = *this * i;
         return *this;
     }
@@ -67,47 +70,48 @@ namespace cosc326 {
     }
 
     Integer& Integer::operator%=(const Integer& i) {
-        *this = *this % i;
+        this->value_ %= i.getValue();
         return *this;
+
     }
 
     Integer operator+(const Integer& lhs, const Integer& rhs) {
         Integer finalres;
         Integer big = lhs.getValue() > rhs.getValue() ? lhs : rhs;
         Integer small = lhs.getValue() <= rhs.getValue() ? lhs : rhs;
-        std::cout << "big sign " << big.getSign() << " small sign " << small.getSign() << "\n";
+        // std::cout << "big sign " << big.getSign() << " small sign " << small.getSign() << "\n";
         /*if (!lhsc.getSign() && rhsc.getSign()) {
-            std::cout << "lhs" << rhs.getValue() << rhs.getSign() << "\n";
-            lhsc.setSign(true);
-            Integer r(std::to_string(lhsc.getValue() - rhsc.getValue()));
-            r.setSign(false);
-            result = r;
-        } else if (lhsc.getSign() && !rhsc.getSign()) {
-            std::cout << "here2\n";
-            rhsc.setSign(true);
-            Integer rh(std::to_string(rhsc.getValue()));
-            rh.setSign(true);
-            
-            result = lhsc - rhsc;
-        } else if ((lhsc.getSign() && rhsc.getSign())
-                   || (!lhsc.getSign() && !rhsc.getSign())) {
-            std::cout << "here3\n";
-            unsigned long long r;
-            r = lhsc.getValue() + rhsc.getValue();
-            Integer res(std::to_string(r));
-            res.setSign(rhsc.getSign());
-            result = res;
-            }*/
-        
+          std::cout << "lhs" << rhs.getValue() << rhs.getSign() << "\n";
+          lhsc.setSign(true);
+          Integer r(std::to_string(lhsc.getValue() - rhsc.getValue()));
+          r.setSign(false);
+          result = r;
+          } else if (lhsc.getSign() && !rhsc.getSign()) {
+          std::cout << "here2\n";
+          rhsc.setSign(true);
+          Integer rh(std::to_string(rhsc.getValue()));
+          rh.setSign(true);
+
+          result = lhsc - rhsc;
+          } else if ((lhsc.getSign() && rhsc.getSign())
+          || (!lhsc.getSign() && !rhsc.getSign())) {
+          std::cout << "here3\n";
+          unsigned long long r;
+          r = lhsc.getValue() + rhsc.getValue();
+          Integer res(std::to_string(r));
+          res.setSign(rhsc.getSign());
+          result = res;
+          }*/
+
         // Both the same
         if (big.getSign() == small.getSign()) {
-            std::cout << "Signes the same in add\n";
+            //     std::cout << "Signes the same in add\n";
             unsigned long long r = big.getValue() + small.getValue();
             Integer result(std::to_string(r));
             result.setSign(big.getSign());
             finalres = result;
         } else {
-            
+
             unsigned long long r = big.getValue() - small.getValue();
             Integer result(std::to_string(r));
             result.setSign(big.getSign());
@@ -121,42 +125,42 @@ namespace cosc326 {
         Integer big = lhs.getValue() > rhs.getValue() ? lhs : rhs;
         Integer small = lhs.getValue() <= rhs.getValue() ? lhs : rhs;
         /*bool switched = false;
-        if (lhs.getValue() > rhs.getValue()) {
-            big = lhs;
-            small = rhs;
-        } else {
-            switched = true;
-            big = rhs;
-            small = lhs;
-        }
-        if (!big.getSign() && small.getSign()) {
-            unsigned long long r = big.getValue() + small.getValue();
-            Integer res(std::to_string(r));
-            res.setSign(false);
-            result = res;    
-        } else if (big.getSign() && !small.getSign()) {
-            unsigned long long r = big.getValue() + small.getValue();
-            Integer res(std::to_string(r));
-            res.setSign(true);
-            result = res;
-            
-        } else if(!big.getSign() && !small.getSign()) {
-            unsigned long long res = big.getValue() - small.getValue();
-            Integer r(std::to_string(res));
-            r.setSign(false);
-            result = r;
-        } else {
-            unsigned long long res = big.getValue() - small.getValue();
-            Integer r(std::to_string(res));
-            if (switched) {
-                r.setSign(false);
-            }
-            result = r;
-            }*/
+          if (lhs.getValue() > rhs.getValue()) {
+          big = lhs;
+          small = rhs;
+          } else {
+          switched = true;
+          big = rhs;
+          small = lhs;
+          }
+          if (!big.getSign() && small.getSign()) {
+          unsigned long long r = big.getValue() + small.getValue();
+          Integer res(std::to_string(r));
+          res.setSign(false);
+          result = res;    
+          } else if (big.getSign() && !small.getSign()) {
+          unsigned long long r = big.getValue() + small.getValue();
+          Integer res(std::to_string(r));
+          res.setSign(true);
+          result = res;
+
+          } else if(!big.getSign() && !small.getSign()) {
+          unsigned long long res = big.getValue() - small.getValue();
+          Integer r(std::to_string(res));
+          r.setSign(false);
+          result = r;
+          } else {
+          unsigned long long res = big.getValue() - small.getValue();
+          Integer r(std::to_string(res));
+          if (switched) {
+          r.setSign(false);
+          }
+          result = r;
+          }*/
         if (big.getSign() == small.getSign()) {
-            std::cout << "signs the same in subtraction\n";
+            //       std::cout << "signs the same in subtraction\n";
             unsigned long long r = big.getValue() - small.getValue();
-            std::cout << "Unsigned result is " << r << '\n';
+            //         std::cout << "Unsigned result is " << r << '\n';
             Integer result(std::to_string(r));
             if (big == lhs) result.setSign(big.getSign());
             else result.setSign(!big.getSign());
@@ -167,7 +171,7 @@ namespace cosc326 {
             result.setSign(!rhs.getSign());
             finalres = result;
         }
-        
+
         return finalres;
     }
 
@@ -181,33 +185,29 @@ namespace cosc326 {
     }
 
     Integer operator/(const Integer& lhs, const Integer& rhs) {
-        bool addsign = false;
-        if (lhs.getSign() != rhs.getSign()) addsign = true;
+
         unsigned long long r = lhs.getValue() / rhs.getValue();
         Integer result(std::to_string(r));
-        result.setSign(addsign);
+        if (lhs.getSign() != rhs.getSign()) result.setSign(false);
         return result;
     }
 
-    Integer operator%(const Integer& lhs, const Integer& rhs) {
-        bool addsign = false;
-        if (lhs.getSign() != rhs.getSign()) addsign = true;
-        unsigned long long r = lhs.getValue() % rhs.getValue();
-        Integer result(std::to_string(r));
-        result.setSign(addsign);
-        return result;
+    Integer operator%(const Integer& lhs, const Integer& rhs) { 
+        Integer result = lhs;
+
+        return result%=rhs;
     }
 
 
     std::ostream& operator<<(std::ostream& os, const Integer& i) {
-       
+
         os << i.getIntegerAsString();
         return os;
     }
 
     std::istream& operator>>(std::istream& is, Integer& i) {
-        
-        r.getIntegerAsString() >> is;
+
+        //       r.getIntegerAsString() >> is;
         return is;
     }
 
@@ -229,7 +229,7 @@ namespace cosc326 {
 
     bool operator<=(const Integer& lhs, const Integer& rhs) {
         if (lhs.getValue() == rhs.getValue()
-            && lhs.getSign() == rhs.getSign()) {
+                && lhs.getSign() == rhs.getSign()) {
             return true;
         }
         return lhs < rhs;
@@ -237,7 +237,7 @@ namespace cosc326 {
 
     bool operator>=(const Integer& lhs, const Integer& rhs) {
         if (lhs.getValue() == rhs.getValue()
-            && lhs.getSign() == rhs.getSign()) {
+                && lhs.getSign() == rhs.getSign()) {
             return true;
         }
         return lhs > rhs;
@@ -245,7 +245,7 @@ namespace cosc326 {
 
     bool operator==(const Integer& lhs, const Integer& rhs) {
         if (lhs.getValue() == rhs.getValue()
-            && lhs.getSign() == rhs.getSign()) {
+                && lhs.getSign() == rhs.getSign()) {
             return true;
         }
         return false;
@@ -253,7 +253,7 @@ namespace cosc326 {
 
     bool operator!=(const Integer& lhs, const Integer& rhs) {
         if (lhs.getValue() == rhs.getValue()
-            && lhs.getSign() == rhs.getSign()) {
+                && lhs.getSign() == rhs.getSign()) {
             return false;
         }
         return true;
