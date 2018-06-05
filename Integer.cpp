@@ -70,7 +70,24 @@ namespace cosc326 {
     }
 
     Integer& Integer::operator%=(const Integer& i) {
-        this->value_ %= i.getValue();
+        //std::cout << "In mod equals\n";
+        //std::cout << *this << " " << i << '\n';
+        /*Integer result = *this;
+        Integer zero;
+        Integer negzero;
+        negzero.setSign(false);
+        if (i != zero && i != negzero) {
+            std::cout << "I is not zero\n";
+            result.setValue(this->value_ %= i.getValue());
+            result.setSign(this->is_positive_);
+            }
+            return result;*/
+        Integer a;
+        unsigned long long r = this->value_ / i.getValue();
+        //std::cout << "r is " << r << '\n';
+        r = this->value_ - (i.getValue() * r);
+        this->value_ = r;
+        //std::cout << *this << '\n';
         return *this;
 
     }
@@ -129,16 +146,20 @@ namespace cosc326 {
     }
 
     Integer operator/(const Integer& lhs, const Integer& rhs) {
-
+        unsigned long long rh = rhs.getValue();
+        if (rh == 0) {
+            throw std::overflow_error("Cannot divide by zero");
+        }
         unsigned long long r = lhs.getValue() / rhs.getValue();
         Integer result(std::to_string(r));
         if (lhs.getSign() != rhs.getSign()) result.setSign(false);
+        
         return result;
     }
 
     Integer operator%(const Integer& lhs, const Integer& rhs) { 
         Integer result = lhs;
-
+        //std::cout << "In mod\n";
         return result%=rhs;
     }
 
@@ -207,8 +228,13 @@ namespace cosc326 {
 
     Integer gcd(const Integer& a, const Integer& b) {
         Integer zero;
-        return b == zero ? a : gcd(b, a % b);
-}
+        Integer negzero;
+        negzero.setSign(false);
+        //std::cout << "IN GCD\n";
+        //std::cout << "Value of a: " << a << '\n';
+        //std::cout << "Value of b: " << b << '\n';
+        return (b <= zero || b <= negzero) ? a : gcd(b, a % b);
+    }
 /*
     Integer gcd(const Integer& a, const Integer& b) {
         unsigned long long v = a.getValue();
