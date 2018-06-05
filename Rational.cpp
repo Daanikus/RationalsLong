@@ -5,24 +5,30 @@ namespace cosc326 {
 
     Rational::Rational() {
         Integer one("1");
+        Integer zero("0");
         this->is_positive_ = true;
         this->denom_ = one;
+        this->num_ = zero;
         reduce();
     }
 
     Rational::Rational(const std::string& str) {
         bool fraction = false;
         bool denominator = false;
+        Integer n;
+        Integer d("1");
+        this->num_ = n;
+        this->denom_ = d;
         std::string whole, num, denom;
         this->is_positive_ = true;
         for (int i = 0; i < str.length(); i++) {
             if (i == 0 && str[i] == '-') {
                 this->is_positive_ = false;
+                this->num_.setSign(false);
                 std::cout << "neg as bro\n";
-            }
-            if (isdigit(str[i])) {
+            } else if (isdigit(str[i])) {
                 if (!fraction) {
-                    whole =+ str[i];
+                    whole += str[i];
                 } else {
                     if(!denominator) {
                         num += str[i];
@@ -37,7 +43,7 @@ namespace cosc326 {
             }
         }
         //std::cout << whole + " " + num + " " + denom + '\n';
-        if (!denom.empty()) {
+        if (!denom.empty() && !num.empty()) {
             this->num_.setValue(atoll(whole.c_str())
                             * atoll(denom.c_str()) + atoll(num.c_str()));
             this->denom_.setValue(atoll(denom.c_str()));
@@ -46,6 +52,7 @@ namespace cosc326 {
             this->denom_.setValue(1);
         }
         reduce();
+        
     }
 
     Rational::Rational(const Rational& r) {
@@ -63,16 +70,17 @@ namespace cosc326 {
     Rational::Rational(const Integer& a, const Integer& b) {
         this->num_ = a;
         this->denom_ = b;
-        this->is_positive_ = (a.getSign() && b.getSign());
+        this->is_positive_ = a.getSign() == b.getSign();
         this->reduce();
+        printStatus();
 
     }
 
     Rational::Rational(const Integer& a, const Integer& b, const Integer& c) {
-        Integer r = a + b;
+        Integer r = (a * c) + b;
         this->num_ = r;
         this->denom_ = c;
-        this->is_positive_ = (r.getSign() && c.getSign());
+        this->is_positive_ = r.getSign();
         this->reduce();
     }
 
@@ -84,7 +92,6 @@ namespace cosc326 {
         
         this->num_ = r.getNum();
         this->denom_ = r.getDenom();
-        this->is_positive_ = r.getSign();
         reduce();
         return *this;
     }
@@ -92,8 +99,10 @@ namespace cosc326 {
     Rational Rational::operator-() const {
         Rational result(*this);
         result.is_positive_ = !this->is_positive_;
-        result.num_ = this->num_;
-        result.denom_ = this->denom_;
+          /*result.num_ = this->num_;
+            result.denom_ = this->denom_;*/
+        result.reduce();
+        
         return result;
     }
     
@@ -104,67 +113,73 @@ namespace cosc326 {
     }
     
     Rational& Rational::operator+=(const Rational& r) {
-        
-        this->num_ += r.getNum();
-        this->denom_ += r.getDenom();
-        this->reduce();
+        *this = *this + r;
+        reduce();
         return *this;
     }
     
     
     Rational& Rational::operator-=(const Rational& r) {
+        *this = *this - r;
         this->reduce();
         return *this;
     }
     
     Rational& Rational::operator*=(const Rational& r) {
-        this->num_ = this->num_ * r.getNum();
-        this->denom_ = this->denom_ * r.getNum();
-        if (this->is_positive_ != r.getSign()) this->is_positive_ = false;
-        else this->is_positive_ = true;
-        this->reduce();
+        *this = *this * r;
         return *this;
     }
     
     Rational& Rational::operator/=(const Rational& r) {
-        
-        this->num_ = this->num_ / r.getNum();
-        this->denom_ = this->denom_ / r.getNum();
-        if (this->is_positive_ != r.getSign()) this->is_positive_ = false;
-        else this->is_positive_ = true;
+        *this = *this / r;
         this->reduce();
         return *this;
     }
     
     Rational operator+(const Rational& lhs, const Rational& rhs) {
+        //lhs.printStatus();
+        //rhs.printStatus();
         Rational result;
-        result.setNum((lhs.getNum() * rhs.getDenom()) + (rhs.getNum() * lhs.getDenom()));
+        std::cout << lhs.getNum() << "*" << rhs.getDenom() << " + " << rhs.getNum() << "*" << lhs.getDenom() <<'\n';
+        result.setNum((-lhs.getNum() * rhs.getDenom()) + (rhs.getNum() * lhs.getDenom()));
         result.setDenom(lhs.getDenom() * rhs.getDenom());
-        if (!lhs.getSign() || !rhs.getSign()) result.setSign(false);
+        //if (!lhs.getSign() || !rhs.getSign()) result.setSign(false);
+        result.setSign(result.getNum().getSign());
+        result.reduce();
+        std::cout << "result is " << result << '\n';
         return result;
     }
     
     Rational operator-(const Rational& lhs, const Rational& rhs) {
         Rational result;
-        result.setNum(lhs.getNum() - rhs.getNum());
-        result.setDenom(lhs.getDenom() - rhs.getDenom());
-        if (!lhs.getSign() || !rhs.getSign()) result.setSign(false);
+        result.setNum((lhs.getNum() * rhs.getDenom()) - (lhs.getDenom() * rhs.getNum()));
+        result.setDenom(lhs.getDenom() * rhs.getDenom());
+        result.setSign(result.getNum().getSign());
+        result.reduce();
         return result;
     }
     
     Rational operator*(const Rational& lhs, const Rational& rhs) {
+        //lhs.reduce();
+        //rhs.reduce();
         Rational result;
-        result.setNum(lhs.getNum() * rhs.getNum());
-        result.setDenom(lhs.getDenom() * rhs.getDenom());
-        if (lhs.getSign() != rhs.getSign()) result.setSign(false);
+        Integer num(lhs.getNum() * rhs.getNum());
+        Integer denom(lhs.getDenom() * rhs.getDenom());
+        result.setNum(num);
+        result.setDenom(denom);
+        if (num.getSign() != denom.getSign()) result.setSign(false);
+        result.reduce();
         return result;
     }
     
     Rational operator/(const Rational& lhs, const Rational& rhs) {
         Rational result;
-        result.setNum(lhs.getNum() / rhs.getNum());
-        result.setDenom(lhs.getDenom() / rhs.getDenom());
-        if (lhs.getSign() != rhs.getSign()) result.setSign(false);
+        Integer num = (lhs.getNum() * rhs.getDenom());
+        Integer denom = lhs.getDenom() * rhs.getNum();
+        result.setNum(num);
+        result.setDenom(denom);
+        if (num.getSign() != denom.getSign()) result.setSign(false);
+        result.reduce();
         return result;
     }
     
@@ -176,18 +191,19 @@ namespace cosc326 {
         std::string s;
         is >> s;
         Rational result(s);
+        result.reduce();
         return is;
     }
     
     bool operator<(const Rational& lhs, const Rational& rhs) {
         Integer l = lhs.getNum() / lhs.getDenom();
-        Integer r = rhs.getNum() / lhs.getDenom();
+        Integer r = rhs.getNum() / rhs.getDenom();
         return l < r;
     }
     
     bool operator> (const Rational& lhs, const Rational& rhs) {
         Integer l = lhs.getNum() / lhs.getDenom();
-        Integer r = rhs.getNum() / lhs.getDenom();
+        Integer r = rhs.getNum() / rhs.getDenom();
         return l > r;
     }
     
@@ -211,29 +227,34 @@ namespace cosc326 {
     }
 
     bool Rational::getSign() const {
+        
         return this->is_positive_;
     }
 
     void Rational::setSign(bool sign) {
         this->is_positive_ = sign;
+        reduce();
     }
 
     Integer Rational::getDenom() const {
+        
         return this->denom_;
     }
 
     void Rational::setDenom(Integer a) {
         this->denom_ = a;
+        a.setSign(false);
         this->reduce();
     }
 
     Integer Rational::getNum() const {
+        
         return this->num_;
     }
 
     void Rational::setNum(Integer a) {
         this->num_ = a;
-        this->reduce();
+        this->is_positive_ = a.getSign();
     }
             
     std::string Rational::getRationalAsString() const {
@@ -244,7 +265,7 @@ namespace cosc326 {
         
         s.append(std::to_string(whole.getValue()));
         Integer num, denom;
-        if (this->num_ % this->denom_ != Integer()) {
+        if (this->num_ % this->denom_ != zero) {
             s.append(".");
             num = this->num_ % this->denom_;
             denom = this->denom_;
@@ -254,19 +275,39 @@ namespace cosc326 {
             else s.append(denom.getIntegerAsString());
             if (s.at(0) == '0') s = s.substr(2);
         }
-        if (!this->is_positive_ || (this->denom_.getSign() != this->num_.getSign()))
+        if (!this->is_positive_ && !this->num_.getSign()) {
+            std::cout << *this << " is negative" << '\n';
             s.insert(0, "-");
+        }
         return s;
     }
 
     void Rational::reduce() {
         Integer zero;
-        this->num_.setSign(this->is_positive_);
-        this->denom_.setSign(this->is_positive_);
+        if (this->num_.getSign() != this->denom_.getSign()) {
+            this->num_.setSign(false);
+            this->denom_.setSign(true);
+            this->is_positive_ = false;
+        } else {
+            this->num_.setSign(true);
+            this->denom_.setSign(true);
+            this->is_positive_ = true;
+        }
+        //this->num_.setSign(this->is_positive_);
+        //this->denom_.setSign(this->is_positive_);
         if (this->denom_ == zero || this->num_ == zero) return;
         Integer divisor = gcd(this->num_, this->denom_);
         this->num_ = this->num_ / divisor;
         this->denom_ = this->denom_ / divisor;
+    }
+
+    void Rational::printStatus() const {
+        std::cout << "Stream Output    : " << *this << '\n';
+        std::cout << "Numerator   Value: " << this->num_ << '\n';
+        std::cout << "Denominator Value: " << this->denom_ << '\n';
+        std::cout << "Numerator   Sign : " << this->num_.getSign() << '\n';
+        std::cout << "Denominator Sign : " << this->denom_.getSign() << '\n';
+                                                                     
     }
 }
     

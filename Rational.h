@@ -30,6 +30,7 @@ namespace cosc326 {
         Integer getNum() const;
         void setNum(Integer a);
         void reduce();
+        void printStatus() const;
         std::string getRationalAsString() const;
 
         Rational& operator=( const Rational& r); // q = r;
