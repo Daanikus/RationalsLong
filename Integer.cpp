@@ -201,9 +201,14 @@ namespace cosc326 {
             return false;
         }
         return true;
-    }
+  }
 
 
+    Integer gcd(const Integer& a, const Integer& b) {
+        Integer zero;
+        return b == zero ? a : gcd(b, a % b);
+}
+/*
     Integer gcd(const Integer& a, const Integer& b) {
         unsigned long long v = a.getValue();
         unsigned long long u = b.getValue();
@@ -215,7 +220,7 @@ namespace cosc326 {
         Integer result(std::to_string(u));
         return result;
     }
-
+*/
     bool Integer::getSign() const {
         return this->is_positive_;
     }
@@ -241,3 +246,4 @@ namespace cosc326 {
     }
 
 }
+
