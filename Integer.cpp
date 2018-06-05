@@ -150,8 +150,9 @@ namespace cosc326 {
     }
 
     std::istream& operator>>(std::istream& is, Integer& i) {
-
-        //       r.getIntegerAsString() >> is;
+        std::string s;
+        is >> s;
+        i.setValue(atoll(s.c_str()));
         return is;
     }
 
